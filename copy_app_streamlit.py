@@ -1,7 +1,7 @@
 import streamlit as st
 import sqlite3
 
-# Initialize database connection
+# Connect to SQLite DB
 conn = sqlite3.connect("snippets.db", check_same_thread=False)
 c = conn.cursor()
 c.execute("""
@@ -23,13 +23,7 @@ with st.form("add_snippet_form"):
         conn.commit()
         st.success("✅ Snippet saved!")
 
-# --- Delete snippet ---
-def delete_snippet(snippet_id):
-    c.execute("DELETE FROM snippets WHERE id = ?", (snippet_id,))
-    conn.commit()
-    st.experimental_rerun()  # Refresh to reflect deletion
-
-# --- Display snippets ---
+# --- Display and manage snippets ---
 st.subheader("📄 Saved Snippets")
 c.execute("SELECT id, text FROM snippets ORDER BY id DESC")
 snippets = c.fetchall()
@@ -37,11 +31,14 @@ snippets = c.fetchall()
 if snippets:
     for sid, text in snippets:
         with st.expander(f"Snippet #{sid}"):
-            st.code(text, language="python")  # or st.text(text)
+            st.code(text, language="python")
             col1, col2 = st.columns([1, 1])
             with col1:
-                st.button("🗑 Delete", key=f"delete_{sid}", on_click=delete_snippet, args=(sid,))
+                if st.button(f"🗑 Delete", key=f"delete_{sid}"):
+                    c.execute("DELETE FROM snippets WHERE id = ?", (sid,))
+                    conn.commit()
+                    st.experimental_rerun()
             with col2:
-                st.code(text)  # can be copied manually
+                st.code(text)
 else:
     st.info("No snippets saved yet.")
