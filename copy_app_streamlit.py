@@ -22,6 +22,7 @@ with st.form("add_snippet_form"):
         c.execute("INSERT INTO snippets (text) VALUES (?)", (snippet,))
         conn.commit()
         st.success("✅ Snippet saved!")
+        st.rerun()
 
 # --- Display and manage snippets ---
 st.subheader("📄 Saved Snippets")
@@ -37,7 +38,7 @@ if snippets:
                 if st.button(f"🗑 Delete", key=f"delete_{sid}"):
                     c.execute("DELETE FROM snippets WHERE id = ?", (sid,))
                     conn.commit()
-                    st.experimental_rerun()
+                    st.rerun()
             with col2:
                 st.code(text)
 else:
