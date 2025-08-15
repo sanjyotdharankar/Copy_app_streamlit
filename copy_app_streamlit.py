@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS snippets (
 )
 """)
 conn.commit()
-conn.close()
 
 
 # --- Default login credentials ---
