@@ -1,8 +1,12 @@
 import streamlit as st
 import sqlite3
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "snippets.db")
 
 # --- Database setup ---
-conn = sqlite3.connect("snippets.db", check_same_thread=False)
+conn = sqlite3.connect(DB_PATH)
 c = conn.cursor()
 c.execute("""
 CREATE TABLE IF NOT EXISTS snippets (
@@ -11,6 +15,8 @@ CREATE TABLE IF NOT EXISTS snippets (
 )
 """)
 conn.commit()
+conn.close()
+
 
 # --- Default login credentials ---
 DEFAULT_USER = "admin"
