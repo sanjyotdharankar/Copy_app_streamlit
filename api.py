@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 import sqlite3
 import os
-
-import os
+from pydantic import BaseModel
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "snippets.db")
@@ -37,10 +36,13 @@ def get_snippets():
     conn.close()
     return [{"id": row["id"], "text": row["text"]} for row in snippets]
 
+class Snippet(BaseModel):
+    text: str
+
 @app.post("/snippets")
-def add_snippet(text: str):
+def add_snippet(snippet: Snippet):
     conn = get_db_connection()
-    conn.execute("INSERT INTO snippets (text) VALUES (?)", (text,))
+    conn.execute("INSERT INTO snippets (text) VALUES (?)", (snippet.text,))
     conn.commit()
     conn.close()
     return {"message": "Snippet added successfully"}
@@ -52,3 +54,4 @@ def delete_snippet(snippet_id: int):
     conn.commit()
     conn.close()
     return {"message": f"Snippet {snippet_id} deleted"}
+ 
