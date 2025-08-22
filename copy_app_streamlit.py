@@ -63,7 +63,7 @@ else:
             st.code(text, language="python")
             cols = st.columns([1, 1])
             with cols[0]:
-                if st.button("🗑 Delete", key=f"delete_{sid}"):
+                if st.button("🗑 RT_Delete", key=f"delete_{sid}"):
                     c.execute("DELETE FROM snippets WHERE id = ?", (sid,))
                     conn.commit()
                     st.rerun()
